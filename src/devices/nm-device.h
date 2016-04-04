@@ -101,6 +101,8 @@
 
 typedef enum NMActStageReturn NMActStageReturn;
 
+#define NM_DEVICE_STATE_DIR ""NMRUNDIR"/devices"
+
 /* These flags affect whether a connection is considered available on a device
  * (check_connection_available()). The flags should have the meaning of relaxing
  * a condition, so that adding a flag might make a connection available that would

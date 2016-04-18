@@ -253,8 +253,6 @@ parse_command_line (NmCli *nmc, int argc, char **argv)
 				return nmc->return_value;
 			}
 			nmc->required_fields = g_strdup (argv[1]);
-		} else if (matches (opt, "-nocheck") == 0) {
-			nmc->nocheck_ver = TRUE;
 		} else if (matches (opt, "-ask") == 0) {
 			nmc->ask = TRUE;
 		} else if (matches (opt, "-show-secrets") == 0) {
@@ -280,7 +278,7 @@ parse_command_line (NmCli *nmc, int argc, char **argv)
 		} else if (matches (opt, "-help") == 0) {
 			usage (base);
 			return NMC_RESULT_SUCCESS;
-		} else {
+		} else if (matches (opt, "-nocheck") != 0){
 			g_string_printf (nmc->return_text, _("Error: Option '%s' is unknown, try 'nmcli -help'."), opt);
 			nmc->return_value = NMC_RESULT_ERROR_USER_INPUT;
 			return nmc->return_value;
@@ -545,7 +543,6 @@ nmc_init (NmCli *nmc)
 	nmc->required_fields = NULL;
 	nmc->output_data = g_ptr_array_new_full (20, g_free);
 	memset (&nmc->print_fields, '\0', sizeof (NmcPrintFields));
-	nmc->nocheck_ver = FALSE;
 	nmc->ask = FALSE;
 	nmc->show_secrets = FALSE;
 	nmc->use_colors = NMC_USE_COLOR_AUTO;

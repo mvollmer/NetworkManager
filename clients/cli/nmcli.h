@@ -59,11 +59,8 @@ typedef enum {
 	/* NetworkManager is not running */
 	NMC_RESULT_ERROR_NM_NOT_RUNNING = 8,
 
-	/* nmcli and NetworkManager versions mismatch */
-	NMC_RESULT_ERROR_VERSIONS_MISMATCH = 9,
-
 	/* Connection/Device/AP not found */
-	NMC_RESULT_ERROR_NOT_FOUND = 10
+	NMC_RESULT_ERROR_NOT_FOUND = 9
 } NMCResultCode;
 
 typedef enum {
@@ -152,7 +149,6 @@ typedef struct _NmCli {
 	char *required_fields;                            /* Required fields in output: '--fields' option */
 	GPtrArray *output_data;                           /* GPtrArray of arrays of NmcOutputField structs - accumulates data for output */
 	NmcPrintFields print_fields;                      /* Structure with field indices to print */
-	gboolean nocheck_ver;                             /* Don't check nmcli and NM versions: option '--nocheck' */
 	gboolean ask;                                     /* Ask for missing parameters: option '--ask' */
 	gboolean show_secrets;                            /* Whether to display secrets (both input and output): option '--show-secrets' */
 	gboolean in_editor;                               /* Whether running the editor - nmcli con edit' */

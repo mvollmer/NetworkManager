@@ -59,8 +59,11 @@ typedef enum {
 	/* NetworkManager is not running */
 	NMC_RESULT_ERROR_NM_NOT_RUNNING = 8,
 
+	/* No more used, keep to preserve API */
+	NMC_RESULT_ERROR_VERSIONS_MISMATCH = 9,
+
 	/* Connection/Device/AP not found */
-	NMC_RESULT_ERROR_NOT_FOUND = 9
+	NMC_RESULT_ERROR_NOT_FOUND = 10
 } NMCResultCode;
 
 typedef enum {

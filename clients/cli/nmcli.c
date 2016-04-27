@@ -89,7 +89,6 @@ usage (const char *prog_name)
 	              "  -c[olors] auto|yes|no                      whether to use colors in output\n"
 	              "  -f[ields] <field1,field2,...>|all|common   specify fields to output\n"
 	              "  -e[scape] yes|no                           escape columns separators in values\n"
-	              "  -n[ocheck]                                 don't check nmcli and NetworkManager versions\n"
 	              "  -a[sk]                                     ask for missing parameters\n"
 	              "  -s[how-secrets]                            allow displaying passwords\n"
 	              "  -w[ait] <seconds>                          set timeout waiting for finishing operations\n"
@@ -253,6 +252,8 @@ parse_command_line (NmCli *nmc, int argc, char **argv)
 				return nmc->return_value;
 			}
 			nmc->required_fields = g_strdup (argv[1]);
+		} else if (matches (opt, "-nocheck") == 0) {
+			/* ignore for backward compatibility */
 		} else if (matches (opt, "-ask") == 0) {
 			nmc->ask = TRUE;
 		} else if (matches (opt, "-show-secrets") == 0) {
@@ -278,7 +279,7 @@ parse_command_line (NmCli *nmc, int argc, char **argv)
 		} else if (matches (opt, "-help") == 0) {
 			usage (base);
 			return NMC_RESULT_SUCCESS;
-		} else if (matches (opt, "-nocheck") != 0){
+		} else {
 			g_string_printf (nmc->return_text, _("Error: Option '%s' is unknown, try 'nmcli -help'."), opt);
 			nmc->return_value = NMC_RESULT_ERROR_USER_INPUT;
 			return nmc->return_value;

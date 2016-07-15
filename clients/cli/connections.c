@@ -1911,6 +1911,7 @@ find_device_for_connection (NmCli *nmc,
 	} else {
 		/* Other connections */
 		NMDevice *found_device = NULL;
+		GError *error2 = NULL;
 		const GPtrArray *devices = nm_client_get_devices (nmc->client);
 
 		for (i = 0; i < devices->len && !found_device; i++) {
@@ -1919,8 +1920,11 @@ find_device_for_connection (NmCli *nmc,
 			if (iface) {
 				const char *dev_iface = nm_device_get_iface (dev);
 				if (   !g_strcmp0 (dev_iface, iface)
-				    && nm_device_connection_compatible (dev, connection, NULL)) {
+				    && nm_device_connection_compatible (dev, connection, &error2)) {
 					found_device = dev;
+				} else if (error2) {
+					g_printerr (_("Device %s not compatible: %s\n"), dev_iface, error2->message);
+					g_clear_error (&error2);
 				}
 			} else {
 				if (nm_device_connection_compatible (dev, connection, NULL)) {

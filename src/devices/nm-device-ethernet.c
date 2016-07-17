@@ -1413,7 +1413,7 @@ new_default_connection (NMDevice *self)
 	NMConnection *connection;
 	NMSettingsConnection *const*connections;
 	NMSetting *setting;
-	const char *perm_hw_addr;
+	const char *hw_address;
 	gs_free char *defname = NULL;
 	gs_free char *uuid = NULL;
 	gs_free char *machine_id = NULL;
@@ -1421,8 +1421,8 @@ new_default_connection (NMDevice *self)
 	if (nm_config_get_no_auto_default_for_device (nm_config_get (), self))
 		return NULL;
 
-	perm_hw_addr = nm_device_get_permanent_hw_address (self, FALSE);
-	if (!perm_hw_addr)
+	hw_address = nm_device_get_hw_address (self);
+	if (!hw_address)
 		return NULL;
 
 	connection = nm_simple_connection_new ();
@@ -1441,7 +1441,7 @@ new_default_connection (NMDevice *self)
 	uuid = _nm_utils_uuid_generate_from_strings ("default-wired",
 	                                             machine_id ?: "",
 	                                             defname,
-	                                             perm_hw_addr,
+	                                             hw_address,
 	                                             NULL);
 
 	g_object_set (setting,
@@ -1455,7 +1455,7 @@ new_default_connection (NMDevice *self)
 
 	/* Lock the connection to the device */
 	setting = nm_setting_wired_new ();
-	g_object_set (setting, NM_SETTING_WIRED_MAC_ADDRESS, perm_hw_addr, NULL);
+	g_object_set (setting, NM_SETTING_WIRED_MAC_ADDRESS, hw_address, NULL);
 	nm_connection_add_setting (connection, setting);
 
 	return connection;

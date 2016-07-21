@@ -2014,8 +2014,10 @@ device_realized (NMDevice *device, GParamSpec *pspec, NMSettings *self)
 	 */
 	if (   !nm_device_get_managed (device, FALSE)
 	    || g_object_get_data (G_OBJECT (device), DEFAULT_WIRED_CONNECTION_TAG)
-	    || have_connection_for_device (self, device))
+	    || have_connection_for_device (self, device)) {
+		_LOGI ("Test failed");
 		return;
+	}
 
 	connection = nm_device_new_default_connection (device);
 	if (!connection)
@@ -2051,9 +2053,11 @@ device_realized (NMDevice *device, GParamSpec *pspec, NMSettings *self)
 void
 nm_settings_device_added (NMSettings *self, NMDevice *device)
 {
-	if (nm_device_is_real (device))
+	if (nm_device_is_real (device)) {
+		_LOGI (" device is real");
 		device_realized (device, NULL, self);
-	else {
+	} else {
+		_LOGI (" device is not real");
 		g_signal_connect_after (device, "notify::" NM_DEVICE_REAL,
 		                        G_CALLBACK (device_realized),
 		                        self);

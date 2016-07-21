@@ -409,6 +409,7 @@ check_connection_compatible (NMDevice *device, NMConnection *connection)
 
 		perm_hw_addr = nm_device_get_permanent_hw_address (device, TRUE);
 		mac = nm_setting_wired_get_mac_address (s_wired);
+		_LOGD (LOGD_DEVICE, "Got permanent address '%s' vs '%s'", perm_hw_addr, mac ? : "none");
 		if (perm_hw_addr) {
 			if (try_mac && mac && !nm_utils_hwaddr_matches (mac, -1, perm_hw_addr, -1))
 				return FALSE;
@@ -421,8 +422,10 @@ check_connection_compatible (NMDevice *device, NMConnection *connection)
 					return FALSE;
 				}
 
-				if (nm_utils_hwaddr_matches (mac_blacklist[i], -1, perm_hw_addr, -1))
+				if (nm_utils_hwaddr_matches (mac_blacklist[i], -1, perm_hw_addr, -1)) {
+					_LOGD (LOGD_DEVICE, "MAC '%s' is blacklisted", perm_hw_addr);
 					return FALSE;
+				}
 			}
 		} else if (mac)
 			return FALSE;

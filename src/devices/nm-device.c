@@ -9678,6 +9678,8 @@ _get_managed_by_flags(NMUnmanagedFlags flags, NMUnmanagedFlags mask, gboolean fo
 		           | NM_UNMANAGED_EXTERNAL_DOWN);
 	}
 
+	if (flags == NM_UNMANAGED_USER_UDEV)
+		return TRUE;
 	return flags == NM_UNMANAGED_NONE;
 }
 
@@ -9704,6 +9706,7 @@ nm_device_get_managed (NMDevice *self, gboolean for_user_request)
 
 	priv = NM_DEVICE_GET_PRIVATE (self);
 
+	_LOGI (LOGD_DEVICE, "flags: 0x%X \n mask: 0x%X", priv->unmanaged_flags, priv->unmanaged_mask);
 	return _get_managed_by_flags (priv->unmanaged_flags, priv->unmanaged_mask, for_user_request);
 }
 
@@ -10121,8 +10124,14 @@ _nm_device_check_connection_available (NMDevice *self,
 
 	/* an unrealized software device is always available, hardware devices never. */
 	if (!nm_device_is_real (self)) {
-		if (nm_device_is_software (self))
-			return nm_device_check_connection_compatible (self, connection);
+		_LOGD (LOGD_DEVICE, "device is not real");
+		if (nm_device_is_software (self)) {
+			_LOGD (LOGD_DEVICE, "device is software");
+			if (nm_device_check_connection_compatible (self, connection)) {
+				_LOGD (LOGD_DEVICE, "TRUE");
+				return TRUE;
+			}
+		}
 		return FALSE;
 	}
 

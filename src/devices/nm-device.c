@@ -9678,8 +9678,6 @@ _get_managed_by_flags(NMUnmanagedFlags flags, NMUnmanagedFlags mask, gboolean fo
 		           | NM_UNMANAGED_EXTERNAL_DOWN);
 	}
 
-	if (flags == NM_UNMANAGED_USER_UDEV)
-		return TRUE;
 	return flags == NM_UNMANAGED_NONE;
 }
 

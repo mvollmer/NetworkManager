@@ -95,7 +95,8 @@ _nm_dbus_new_connection_finish (GAsyncResult *result,
 gboolean
 _nm_dbus_is_connection_private (GDBusConnection *connection)
 {
-	return g_dbus_connection_get_unique_name (connection) == NULL;
+	return FALSE;
+	//return g_dbus_connection_get_unique_name (connection) == NULL;
 }
 
 static GHashTable *proxy_types;

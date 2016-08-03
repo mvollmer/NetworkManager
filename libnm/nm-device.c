@@ -50,7 +50,6 @@
 #include "nm-ip4-config.h"
 #include "nm-ip6-config.h"
 #include "nm-object-private.h"
-#include "nm-object-cache.h"
 #include "nm-remote-connection.h"
 #include "nm-core-internal.h"
 #include "nm-utils.h"
@@ -386,6 +385,8 @@ static void
 constructed (GObject *object)
 {
 	NMDevicePrivate *priv = NM_DEVICE_GET_PRIVATE (object);
+
+//g_printerr ("KVOKKOTTTT! %p\n", g_dbus_object_get_interface (G_DBUS_OBJECT (object), "org.freedesktop.NetworkManager.Device"));
 
 	G_OBJECT_CLASS (nm_device_parent_class)->constructed (object);
 

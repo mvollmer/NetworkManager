@@ -236,10 +236,11 @@ connection_added (NMRemoteSettings *self,
 		                  self);
 	}
 
-	if (nm_remote_connection_get_visible (remote))
+	if (nm_remote_connection_get_visible (remote)) {
 		g_ptr_array_add (priv->visible_connections, remote);
-	else
+	} else {
 		g_signal_stop_emission (self, signals[CONNECTION_ADDED], 0);
+	}
 
 	path = nm_connection_get_path (NM_CONNECTION (remote));
 	addinfo = add_connection_info_find (self, path);

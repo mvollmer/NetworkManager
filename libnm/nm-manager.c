@@ -34,7 +34,6 @@
 #include "nm-object-private.h"
 #include "nm-active-connection.h"
 #include "nm-vpn-connection.h"
-#include "nm-object-cache.h"
 #include "nm-dbus-helpers.h"
 
 #include "nmdbus-manager.h"
@@ -1304,11 +1303,6 @@ nm_running_changed_cb (GObject *object,
 		priv->wimax_hw_enabled = FALSE;
 		g_free (priv->version);
 		priv->version = NULL;
-
-		/* Clear object cache to ensure bad refcounting by managers doesn't
-		 * keep objects in the cache.
-		 */
-		_nm_object_cache_clear ();
 	} else {
 		_nm_object_suppress_property_updates (NM_OBJECT (manager), FALSE);
 

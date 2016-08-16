@@ -20,9 +20,10 @@
 
 #include "nm-default.h"
 
+#include "nm-pacrunner-manager.h"
+
 #include "nm-utils.h"
 #include "nm-platform.h"
-#include "nm-pacrunner-manager.h"
 #include "nm-proxy-config.h"
 #include "nm-ip4-config.h"
 #include "nm-ip6-config.h"

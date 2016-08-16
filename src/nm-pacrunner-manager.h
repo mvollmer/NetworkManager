@@ -21,8 +21,6 @@
 #ifndef __NETWORKMANAGER_PACRUNNER_MANAGER_H__
 #define __NETWORKMANAGER_PACRUNNER_MANAGER_H__
 
-#include "nm-default.h"
-
 #define NM_TYPE_PACRUNNER_MANAGER            (nm_pacrunner_manager_get_type ())
 #define NM_PACRUNNER_MANAGER(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_PACRUNNER_MANAGER, NMPacRunnerManager))
 #define NM_PACRUNNER_MANAGER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), NM_TYPE_PACRUNNER_MANAGER, NMPacRunnerManagerClass))

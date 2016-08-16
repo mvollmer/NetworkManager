@@ -110,7 +110,7 @@ guint32 nm_setting_proxy_get_socks_port (NMSettingProxy *setting);
 NM_AVAILABLE_IN_1_4
 gboolean nm_setting_proxy_get_socks_version_5 (NMSettingProxy *setting);
 NM_AVAILABLE_IN_1_4
-char **nm_setting_proxy_get_no_proxy_for (NMSettingProxy *setting);
+const char *const*nm_setting_proxy_get_no_proxy_for (NMSettingProxy *setting);
 NM_AVAILABLE_IN_1_4
 gboolean nm_setting_proxy_get_browser_only (NMSettingProxy *setting);
 NM_AVAILABLE_IN_1_4

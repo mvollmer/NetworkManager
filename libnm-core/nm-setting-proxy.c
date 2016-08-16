@@ -58,7 +58,7 @@ typedef struct {
 	char *socks_proxy;
 	guint32 socks_port;
 	gboolean socks_version_5;
-	GPtrArray *no_proxy_for;
+	char **no_proxy_for;
 	gboolean browser_only;
 	char *pac_url;
 	char *pac_script;
@@ -286,19 +286,21 @@ nm_setting_proxy_get_socks_version_5 (NMSettingProxy *setting)
  * nm_setting_proxy_get_no_proxy_for:
  * @setting: the #NMSettingProxy
  *
- * Returns: the hosts to be excluded from proxy
+ * Returns: (transfer none): the hosts to be excluded from proxy
  *
  * Since: 1.4
  **/
-char **
+const char *const*
 nm_setting_proxy_get_no_proxy_for (NMSettingProxy *setting)
 {
 	NMSettingProxyPrivate *priv;
+
 	g_return_val_if_fail (NM_IS_SETTING_PROXY (setting), NULL);
 
 	priv = NM_SETTING_PROXY_GET_PRIVATE (setting);
 
-	return _nm_utils_ptrarray_to_strv (priv->no_proxy_for);
+	return ((const char *const*) priv->no_proxy_for)
+	    ?: ((const char *const*) &priv->no_proxy_for);
 }
 
 /**
@@ -448,7 +450,7 @@ verify (NMSetting *setting, NMConnection *connection, GError **error)
 			return FALSE;
 		}
 
-		if (priv->no_proxy_for->len > 0) {
+		if (priv->no_proxy_for) {
 			g_set_error (error,
 			             NM_CONNECTION_ERROR,
 			             NM_CONNECTION_ERROR_INVALID_PROPERTY,
@@ -512,7 +514,6 @@ nm_setting_proxy_init (NMSettingProxy *setting)
 	NMSettingProxyPrivate *priv = NM_SETTING_PROXY_GET_PRIVATE (setting);
 
 	priv->method = NM_SETTING_PROXY_METHOD_NONE;
-	priv->no_proxy_for = g_ptr_array_new_with_free_func (g_free);
 }
 
 static void
@@ -528,7 +529,7 @@ finalize (GObject *object)
 	g_free (priv->pac_url);
 	g_free (priv->pac_script);
 
-	g_ptr_array_unref (priv->no_proxy_for);
+	g_strfreev (priv->no_proxy_for);
 
 	G_OBJECT_CLASS (nm_setting_proxy_parent_class)->finalize (object);
 }
@@ -574,7 +575,7 @@ get_property (GObject *object, guint prop_id,
 		g_value_set_boolean (value, nm_setting_proxy_get_socks_version_5 (setting));
 		break;
 	case PROP_NO_PROXY_FOR:
-		g_value_take_boxed (value, nm_setting_proxy_get_no_proxy_for (setting));
+		g_value_set_boxed (value, nm_setting_proxy_get_no_proxy_for (setting));
 		break;
 	case PROP_BROWSER_ONLY:
 		g_value_set_boolean (value, nm_setting_proxy_get_browser_only (setting));
@@ -636,8 +637,14 @@ set_property (GObject *object, guint prop_id,
 		priv->socks_version_5 = g_value_get_boolean (value);
 		break;
 	case PROP_NO_PROXY_FOR:
-		g_ptr_array_unref (priv->no_proxy_for);
-		priv->no_proxy_for = _nm_utils_strv_to_ptrarray (g_value_get_boxed (value));
+		g_strfreev (priv->no_proxy_for);
+		priv->no_proxy_for = g_value_get_boxed (value);
+		if (priv->no_proxy_for) {
+			if (priv->no_proxy_for[0])
+				priv->no_proxy_for = g_strdupv (priv->no_proxy_for);
+			else
+				priv->no_proxy_for = NULL;
+		}
 		break;
 	case PROP_BROWSER_ONLY:
 		priv->browser_only = g_value_get_boolean (value);

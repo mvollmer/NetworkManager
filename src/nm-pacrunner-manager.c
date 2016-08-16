@@ -61,7 +61,7 @@ typedef struct {
         nm_log ((level), _NMLOG_DOMAIN, \
                 "%s[%p]: " _NM_UTILS_MACRO_FIRST(__VA_ARGS__), \
                 _NMLOG_PREFIX_NAME, \
-                (self) \
+                (self) /* Beware: must not dereference @self (see pacrunner_remove_done) */\
                 _NM_UTILS_MACRO_REST(__VA_ARGS__)); \
     } G_STMT_END
 
@@ -410,14 +410,13 @@ nm_pacrunner_manager_send (NMPacRunnerManager *self,
 static void
 pacrunner_remove_done (GObject *source, GAsyncResult *res, gpointer user_data)
 {
-	NMPacRunnerManager *self = NM_PACRUNNER_MANAGER (user_data);
-	NMPacRunnerManagerPrivate *priv = NM_PACRUNNER_MANAGER_GET_PRIVATE (self);
+	/* @self may be a dangling pointer. However, we don't use it as the
+	 * logging macro below does not dereference @self. */
+	NMPacRunnerManager *self = user_data;
 	gs_free_error GError *error = NULL;
 	gs_unref_variant GVariant *ret = NULL;
 
-	ret = g_dbus_proxy_call_finish (priv->pacrunner, res, &error);
-	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-		return;
+	ret = g_dbus_proxy_call_finish ((GDBusProxy *) source, res, &error);
 
 	if (!ret)
 		_LOGD ("Couldn't remove proxy config from pacrunner: %s", error->message);

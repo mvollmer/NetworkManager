@@ -494,6 +494,13 @@ verify (NMSetting *setting, NMConnection *connection, GError **error)
 			g_prefix_error (error, "%s.%s: ", NM_SETTING_PROXY_SETTING_NAME, NM_SETTING_PROXY_PAC_SCRIPT);
 			return FALSE;
 		}
+	} else {
+		g_set_error (error,
+		             NM_CONNECTION_ERROR,
+		             NM_CONNECTION_ERROR_INVALID_PROPERTY,
+		             _("unknown method"));
+		g_prefix_error (error, "%s.%s: ", NM_SETTING_PROXY_SETTING_NAME, NM_SETTING_PROXY_METHOD);
+		return FALSE;
 	}
 
 	return TRUE;

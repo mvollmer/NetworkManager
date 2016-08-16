@@ -68,14 +68,6 @@ typedef struct {
 /*****************************************************************************/
 
 static void
-pacrunner_manager_args_destroy (GVariant *pacrunner_manager_args)
-{
-	g_return_if_fail (pacrunner_manager_args != NULL);
-
-	g_clear_pointer (&pacrunner_manager_args, g_variant_unref);
-}
-
-static void
 remove_data_destroy (struct remove_data *data)
 {
 	g_return_if_fail (data != NULL);
@@ -494,7 +486,7 @@ dispose (GObject *object)
 
 	g_clear_object (&priv->pacrunner);
 
-	g_list_free_full (priv->args, (GDestroyNotify) pacrunner_manager_args_destroy);
+	g_list_free_full (priv->args, (GDestroyNotify) g_variant_unref);
 	priv->args = NULL;
 
 	g_list_free_full (priv->remove, (GDestroyNotify) remove_data_destroy);

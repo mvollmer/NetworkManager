@@ -20,9 +20,10 @@
 
 #include "nm-default.h"
 
+#include "nm-proxy-config.h"
+
 #include <stdlib.h>
 
-#include "nm-proxy-config.h"
 #include "nm-core-internal.h"
 
 #define NM_PROXY_CONFIG_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NM_TYPE_PROXY_CONFIG, NMProxyConfigPrivate))

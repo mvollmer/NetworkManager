@@ -18,8 +18,6 @@
  * (C) Copyright 2016 Atul Anand <atulhjp@gmail.com>.
  */
 
-#include "nm-default.h"
-
 #ifndef __NETWORKMANAGER_PROXY_CONFIG_H__
 #define __NETWORKMANAGER_PROXY_CONFIG_H__
 

@@ -294,21 +294,20 @@ name_owner_changed (GObject *object,
 static void
 pacrunner_proxy_cb (GObject *source, GAsyncResult *res, gpointer user_data)
 {
-	NMPacRunnerManager *self = NULL;
+	NMPacRunnerManager *self = user_data;
 	NMPacRunnerManagerPrivate *priv;
-	gs_free_error GError *error = NULL;
+	GError *error = NULL;
 	GDBusProxy *proxy;
-
-	self = NM_PACRUNNER_MANAGER (user_data);
-	priv = NM_PACRUNNER_MANAGER_GET_PRIVATE (self);
 
 	proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
 	if (!proxy) {
 		if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
 			_LOGW ("failed to connect to pacrunner via DBus: %s", error->message);
-		g_clear_error (&error);
+		g_error_free (error);
 		return;
 	}
+
+	priv = NM_PACRUNNER_MANAGER_GET_PRIVATE (self);
 
 	priv->pacrunner = proxy;
 	nm_clear_g_cancellable (&priv->pacrunner_cancellable);
@@ -471,7 +470,7 @@ nm_pacrunner_manager_init (NMPacRunnerManager *self)
 	                          PACRUNNER_DBUS_PATH,
 	                          PACRUNNER_DBUS_INTERFACE,
 	                          priv->pacrunner_cancellable,
-	                         (GAsyncReadyCallback) pacrunner_proxy_cb,
+	                          (GAsyncReadyCallback) pacrunner_proxy_cb,
 	                          self);
 }
 

@@ -64,7 +64,6 @@ void
 nm_proxy_config_merge_setting (NMProxyConfig *config, NMSettingProxy *setting)
 {
 	const char *tmp = NULL;
-	char **strv = NULL;
 	guint32 port = 0;
 	NMProxyConfigPrivate *priv;
 	NMSettingProxyMethod method;
@@ -105,9 +104,7 @@ nm_proxy_config_merge_setting (NMProxyConfig *config, NMSettingProxy *setting)
 	case NM_SETTING_PROXY_METHOD_MANUAL:
 		priv->method = NM_PROXY_CONFIG_METHOD_MANUAL;
 
-		strv = nm_setting_proxy_get_no_proxy_for (setting);
-		priv->excludes = _nm_utils_strv_to_ptrarray (strv);
-		g_free (strv);
+		priv->excludes = _nm_utils_strv_to_ptrarray ((char **) nm_setting_proxy_get_no_proxy_for (setting));
 
 		priv->proxies = g_ptr_array_new_with_free_func (g_free);
 

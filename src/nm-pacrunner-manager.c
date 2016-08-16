@@ -488,15 +488,17 @@ dispose (GObject *object)
 {
 	NMPacRunnerManagerPrivate *priv = NM_PACRUNNER_MANAGER_GET_PRIVATE (object);
 
-	g_free (priv->iface);
+	g_clear_pointer (&priv->iface, g_free);
 
 	nm_clear_g_cancellable (&priv->pacrunner_cancellable);
 
 	g_clear_object (&priv->pacrunner);
 
 	g_list_free_full (priv->args, (GDestroyNotify) pacrunner_manager_args_destroy);
+	priv->args = NULL;
 
 	g_list_free_full (priv->remove, (GDestroyNotify) remove_data_destroy);
+	priv->remove = NULL;
 
 	G_OBJECT_CLASS (nm_pacrunner_manager_parent_class)->dispose (object);
 }

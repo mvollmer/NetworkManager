@@ -1994,8 +1994,7 @@ write_proxy_setting (NMConnection *connection, shvarFile *ifcfg, GError **error)
 	const char *http_proxy, *ssl_proxy, *ftp_proxy, *socks_proxy;
 	guint32 http_port, ssl_port, ftp_port, socks_port;
 	gboolean http_default, socks_version_5, browser_only;
-	GString *no_proxy_for;
-	char **iter, **excludes = NULL;
+	const char *const*excludes;
 
 	s_proxy = nm_connection_get_setting_proxy (connection);
 	if (!s_proxy)
@@ -2034,19 +2033,11 @@ write_proxy_setting (NMConnection *connection, shvarFile *ifcfg, GError **error)
 		svSetValue (ifcfg, "PROXY_METHOD", "manual", FALSE);
 
 		excludes = nm_setting_proxy_get_no_proxy_for (s_proxy);
-		if (excludes && g_strv_length (excludes)) {
-			int counter = 0;
+		if (excludes && excludes[0]) {
+			gs_free char *str = NULL;
 
-			no_proxy_for = g_string_new (NULL);
-			for (iter = excludes; *iter; iter++) {
-				if (counter > 0)
-					g_string_append (no_proxy_for, " ");
-				counter++;
-				g_string_append (no_proxy_for, *iter);
-			}
-
-			svSetValue (ifcfg, "NO_PROXY_FOR", no_proxy_for->str, FALSE);
-			g_string_free (no_proxy_for, TRUE);
+			str = g_strjoinv (" ", (char **) excludes);
+			svSetValue (ifcfg, "NO_PROXY_FOR", str, FALSE);
 		}
 
 		http_proxy = nm_setting_proxy_get_http_proxy (s_proxy);

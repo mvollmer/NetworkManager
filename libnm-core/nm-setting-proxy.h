@@ -38,7 +38,7 @@ G_BEGIN_DECLS
  *
  * The Proxy method.
  *
- * Since: 1.4
+ * Since: 1.6
  */
 typedef enum {
 	NM_SETTING_PROXY_METHOD_AUTO = 0,
@@ -81,41 +81,41 @@ typedef struct {
 	gpointer padding[4];
 } NMSettingProxyClass;
 
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 GType nm_setting_proxy_get_type (void);
 
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 NMSetting *nm_setting_proxy_new (void);
 
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 NMSettingProxyMethod nm_setting_proxy_get_method (NMSettingProxy *setting);
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 const char *nm_setting_proxy_get_http_proxy (NMSettingProxy *setting);
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 guint32 nm_setting_proxy_get_http_port (NMSettingProxy *setting);
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 gboolean nm_setting_proxy_get_http_default (NMSettingProxy *setting);
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 const char *nm_setting_proxy_get_ssl_proxy (NMSettingProxy *setting);
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 guint32 nm_setting_proxy_get_ssl_port (NMSettingProxy *setting);
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 const char *nm_setting_proxy_get_ftp_proxy (NMSettingProxy *setting);
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 guint32 nm_setting_proxy_get_ftp_port (NMSettingProxy *setting);
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 const char *nm_setting_proxy_get_socks_proxy (NMSettingProxy *setting);
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 guint32 nm_setting_proxy_get_socks_port (NMSettingProxy *setting);
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 gboolean nm_setting_proxy_get_socks_version_5 (NMSettingProxy *setting);
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 const char *const*nm_setting_proxy_get_no_proxy_for (NMSettingProxy *setting);
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 gboolean nm_setting_proxy_get_browser_only (NMSettingProxy *setting);
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 const char *nm_setting_proxy_get_pac_url (NMSettingProxy *setting);
-NM_AVAILABLE_IN_1_4
+NM_AVAILABLE_IN_1_6
 const char *nm_setting_proxy_get_pac_script (NMSettingProxy *setting);
 
 G_END_DECLS

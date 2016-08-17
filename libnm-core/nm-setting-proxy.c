@@ -92,7 +92,7 @@ enum {
  *
  * Returns: the new empty #NMSettingProxy object
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 NMSetting *
 nm_setting_proxy_new (void)
@@ -110,7 +110,7 @@ nm_setting_proxy_new (void)
  *
  * Returns: the proxy configuration method
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 NMSettingProxyMethod
 nm_setting_proxy_get_method (NMSettingProxy *setting)
@@ -126,7 +126,7 @@ nm_setting_proxy_get_method (NMSettingProxy *setting)
  *
  * Returns: the HTTP proxy
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 const char *
 nm_setting_proxy_get_http_proxy (NMSettingProxy *setting)
@@ -142,7 +142,7 @@ nm_setting_proxy_get_http_proxy (NMSettingProxy *setting)
  *
  * Returns: the HTTP port number
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 guint32
 nm_setting_proxy_get_http_port (NMSettingProxy *setting)
@@ -159,7 +159,7 @@ nm_setting_proxy_get_http_port (NMSettingProxy *setting)
  * Returns: TRUE if HTTP Proxy is default for all
  * protocols. FALSE if not.
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 gboolean
 nm_setting_proxy_get_http_default (NMSettingProxy *setting)
@@ -175,7 +175,7 @@ nm_setting_proxy_get_http_default (NMSettingProxy *setting)
  *
  * Returns: the SSL proxy
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 const char *
 nm_setting_proxy_get_ssl_proxy (NMSettingProxy *setting)
@@ -191,7 +191,7 @@ nm_setting_proxy_get_ssl_proxy (NMSettingProxy *setting)
  *
  * Returns: the SSL port number
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 guint32
 nm_setting_proxy_get_ssl_port (NMSettingProxy *setting)
@@ -207,7 +207,7 @@ nm_setting_proxy_get_ssl_port (NMSettingProxy *setting)
  *
  * Returns: the FTP proxy
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 const char *
 nm_setting_proxy_get_ftp_proxy (NMSettingProxy *setting)
@@ -223,7 +223,7 @@ nm_setting_proxy_get_ftp_proxy (NMSettingProxy *setting)
  *
  * Returns: the FTP port number
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 guint32
 nm_setting_proxy_get_ftp_port (NMSettingProxy *setting)
@@ -239,7 +239,7 @@ nm_setting_proxy_get_ftp_port (NMSettingProxy *setting)
  *
  * Returns: the SOCKS proxy
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 const char *
 nm_setting_proxy_get_socks_proxy (NMSettingProxy *setting)
@@ -255,7 +255,7 @@ nm_setting_proxy_get_socks_proxy (NMSettingProxy *setting)
  *
  * Returns: the SOCKS port number
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 guint32
 nm_setting_proxy_get_socks_port (NMSettingProxy *setting)
@@ -272,7 +272,7 @@ nm_setting_proxy_get_socks_port (NMSettingProxy *setting)
  * Returns: TRUE if SOCKS version is 5.
  * FALSE if SOCKS version is 4.
  *
- * Since: 1.4
+ * Since: 1.6
 **/
 gboolean
 nm_setting_proxy_get_socks_version_5 (NMSettingProxy *setting)
@@ -288,7 +288,7 @@ nm_setting_proxy_get_socks_version_5 (NMSettingProxy *setting)
  *
  * Returns: (transfer none): the hosts to be excluded from proxy
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 const char *const*
 nm_setting_proxy_get_no_proxy_for (NMSettingProxy *setting)
@@ -310,7 +310,7 @@ nm_setting_proxy_get_no_proxy_for (NMSettingProxy *setting)
  * Returns: TRUE if this proxy configuration is only for Browser
  * clients/schemes otherwise FALSE.
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 gboolean
 nm_setting_proxy_get_browser_only (NMSettingProxy *setting)
@@ -326,7 +326,7 @@ nm_setting_proxy_get_browser_only (NMSettingProxy *setting)
  *
  * Returns: the PAC url for obtaining PAC file
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 const char *
 nm_setting_proxy_get_pac_url (NMSettingProxy *setting)
@@ -342,7 +342,7 @@ nm_setting_proxy_get_pac_url (NMSettingProxy *setting)
  *
  * Returns: the path to PAC Script
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 const char *
 nm_setting_proxy_get_pac_script (NMSettingProxy *setting)
@@ -682,7 +682,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * Method for proxy configuration, Default is "NONE"
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_METHOD,
@@ -697,7 +697,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * HTTP proxy
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_HTTP_PROXY,
@@ -711,7 +711,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * Port number for HTTP proxy
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_HTTP_PORT,
@@ -725,7 +725,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * Make HTTP proxy default for all protocols.
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_HTTP_DEFAULT,
@@ -739,7 +739,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * SSL proxy.
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_SSL_PROXY,
@@ -753,7 +753,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * Port number for SSL proxy.
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_SSL_PORT,
@@ -767,7 +767,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * FTP proxy.
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_FTP_PROXY,
@@ -781,7 +781,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * Port number for FTP proxy.
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_FTP_PORT,
@@ -795,7 +795,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * SOCKS proxy.
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_SOCKS_PROXY,
@@ -809,7 +809,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * Port number for SOCKS proxy.
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_SOCKS_PORT,
@@ -823,7 +823,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * set %TRUE if SOCKS version is 5.
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_SOCKS_VERSION_5,
@@ -837,7 +837,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * Array of host to be excluded from proxy.
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_NO_PROXY_FOR,
@@ -851,7 +851,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * TRUE if Proxy is for Browser Stuff.
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_BROWSER_ONLY,
@@ -865,7 +865,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * PAC Url for obtaining PAC File.
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_PAC_URL,
@@ -879,7 +879,7 @@ nm_setting_proxy_class_init (NMSettingProxyClass *setting_class)
 	 *
 	 * PAC Script location.
 	 *
-	 * Since: 1.4
+	 * Since: 1.6
 	 **/
 	g_object_class_install_property
 	    (object_class, PROP_PAC_SCRIPT,

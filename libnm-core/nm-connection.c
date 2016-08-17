@@ -2144,7 +2144,7 @@ nm_connection_get_setting_pppoe (NMConnection *connection)
  *
  * Returns:an #NMSettingProxy if the connection contains one, otherwise %NULL
  *
- * Since: 1.4
+ * Since: 1.6
  **/
 NMSettingProxy *
 nm_connection_get_setting_proxy (NMConnection *connection)

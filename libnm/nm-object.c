@@ -614,7 +614,7 @@ object_created (GObject *obj, const char *path, gpointer user_data)
 			object_class->object_creation_failed (odata->self, path);
 	}
 
-	odata->objects[--odata->remaining] = obj;
+	odata->objects[--odata->remaining] = obj ? g_object_ref (obj) : NULL;
 	if (!odata->remaining)
 		object_property_maybe_complete (odata, FALSE);
 }
@@ -654,6 +654,7 @@ handle_object_property (NMObject *self, const char *property_name, GVariant *val
 
 	obj = g_object_get_data (G_OBJECT (object), "nm-object");
 	object_created (obj, path, odata);
+	g_object_unref (object);
 
 	return FALSE;
 }
@@ -708,6 +709,7 @@ handle_object_array_property (NMObject *self, const char *property_name, GVarian
 
 		obj = g_object_get_data (G_OBJECT (object), "nm-object");
 		object_created (obj, path, odata);
+		g_object_unref (object);
 	}
 
 	if (!synchronously) {

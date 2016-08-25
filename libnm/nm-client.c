@@ -1990,16 +1990,42 @@ nm_object_for_gdbus_object (GDBusObject *object, gpointer user_data)
 	                          NULL);
 
 	g_object_set_data_full (G_OBJECT (object), "nm-object",
-	                        g_object_ref (nm_object), g_object_unref);
+	                        nm_object, g_object_unref);
 }
 
-#if 0
 static void
-object_added (GDBusObjectManager *manager, GDBusObject *object, gpointer user_data)
+nm_object_inited (GObject *object, GAsyncResult *result, gpointer user_data)
 {
-	nm_object_for_gdbus_object (object, NULL);
+	GError *error = NULL;
+
+	if (!g_async_initable_init_finish (G_ASYNC_INITABLE (object), result, &error)) {
+		g_printerr (">>> %s <<<\n", error->message);
+		g_error_free (error);
+	}
 }
-#endif
+
+
+static void
+object_added (GDBusObjectManager *object_manager, GDBusObject *object, gpointer user_data)
+{
+	NMObject *nm_object;
+
+	nm_object_for_gdbus_object (object, object_manager);
+
+	nm_object = g_object_get_data (G_OBJECT (object), "nm-object");
+	if (!nm_object)
+		return;
+
+	g_async_initable_init_async (G_ASYNC_INITABLE (nm_object),
+	                             G_PRIORITY_DEFAULT, NULL,
+	                             nm_object_inited, user_data);
+}
+
+static void
+object_removed (GDBusObjectManager *object_manager, GDBusObject *object, gpointer user_data)
+{
+	g_object_set_data (G_OBJECT (object), "nm-object", NULL);
+}
 
 static gboolean
 objects_created (NMClient *client, GDBusObjectManager *object_manager, GError **error)
@@ -2024,6 +2050,7 @@ objects_created (NMClient *client, GDBusObjectManager *object_manager, GError **
 	}
 
 	nm_object = g_object_get_data (G_OBJECT (manager), "nm-object");
+	g_object_unref (manager);
 	if (!nm_object) {
 		g_set_error_literal (error,
 		                     NM_CLIENT_ERROR,
@@ -2052,6 +2079,7 @@ objects_created (NMClient *client, GDBusObjectManager *object_manager, GError **
 	                  G_CALLBACK (manager_active_connection_removed), client);
 
 	settings = g_dbus_object_manager_get_object (object_manager, NM_DBUS_PATH_SETTINGS);
+	g_object_unref (settings);
 	if (!settings) {
 		g_set_error_literal (error,
 		                     NM_CLIENT_ERROR,
@@ -2078,8 +2106,10 @@ objects_created (NMClient *client, GDBusObjectManager *object_manager, GError **
 	g_signal_connect (priv->settings, "connection-removed",
 	                  G_CALLBACK (settings_connection_removed), client);
 
-//	g_signal_connect (object_manager, "object-added",
-//	                  G_CALLBACK (object_added), object_manager);
+	g_signal_connect (object_manager, "object-added",
+	                  G_CALLBACK (object_added), NULL);
+	g_signal_connect (object_manager, "object-removed",
+	                  G_CALLBACK (object_removed), NULL);
 
 	return TRUE;
 }

@@ -798,19 +798,26 @@ out:
 }
 
 static void
-process_properties_changed (NMObject *self, GVariant *properties, gboolean synchronously)
+g_properties_changed (GDBusProxy *proxy,
+                      GVariant   *changed_properties,
+                      GStrv       invalidated_properties,
+                      gpointer    user_data)
 {
+	NMObject *self = NM_OBJECT (user_data);
 	NMObjectPrivate *priv = NM_OBJECT_GET_PRIVATE (self);
 	GVariantIter iter;
 	const char *name;
 	GVariant *value;
 
+	g_printerr ("XXX g_properties_changed: %s\n", g_variant_print (changed_properties, TRUE));
+
 	if (priv->suppress_property_updates)
 		return;
 
-	g_variant_iter_init (&iter, properties);
+	g_variant_iter_init (&iter, changed_properties);
 	while (g_variant_iter_next (&iter, "{&sv}", &name, &value)) {
-		handle_property_changed (self, name, value, synchronously);
+		g_printerr ("XXX \t%s\n", name);
+		handle_property_changed (self, name, value, FALSE);
 		g_variant_unref (value);
 	}
 }
@@ -820,7 +827,23 @@ properties_changed (GDBusProxy *proxy,
                     GVariant   *properties,
                     gpointer    user_data)
 {
-	process_properties_changed (NM_OBJECT (user_data), properties, FALSE);
+	NMObject *self = NM_OBJECT (user_data);
+	NMObjectPrivate *priv = NM_OBJECT_GET_PRIVATE (self);
+	GVariantIter iter;
+	const char *name;
+	GVariant *value;
+
+	g_printerr ("XXX properties_changed\n");
+
+	if (priv->suppress_property_updates)
+		return;
+
+	g_variant_iter_init (&iter, properties);
+	while (g_variant_iter_next (&iter, "{&sv}", &name, &value)) {
+		g_printerr ("XXX \t%s\n", name);
+		handle_property_changed (self, name, value, FALSE);
+		g_variant_unref (value);
+	}
 }
 
 #define HANDLE_TYPE(vtype, ctype, getter) \
@@ -1000,11 +1023,13 @@ _nm_object_register_properties (NMObject *object,
 		g_once_init_leave (&dval, 1);
 	}
 
-	proxy = _nm_object_get_proxy (object, interface);
-	g_return_if_fail (proxy != NULL);
+	proxy = G_DBUS_PROXY (g_dbus_object_get_interface (priv->object, interface));
+	//g_return_if_fail (proxy != NULL);
 
 	_nm_dbus_signal_connect (proxy, "PropertiesChanged", G_VARIANT_TYPE ("(a{sv})"),
 	                         G_CALLBACK (properties_changed), object);
+	g_signal_connect (proxy, "g-properties-changed",
+		          G_CALLBACK (g_properties_changed), object);
 
 	instance = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->property_tables = g_slist_prepend (priv->property_tables, instance);

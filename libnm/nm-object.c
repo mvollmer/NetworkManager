@@ -809,38 +809,11 @@ g_properties_changed (GDBusProxy *proxy,
 	const char *name;
 	GVariant *value;
 
-	g_printerr ("XXX g_properties_changed: %s\n", g_variant_print (changed_properties, TRUE));
-
 	if (priv->suppress_property_updates)
 		return;
 
 	g_variant_iter_init (&iter, changed_properties);
 	while (g_variant_iter_next (&iter, "{&sv}", &name, &value)) {
-		g_printerr ("XXX \t%s\n", name);
-		handle_property_changed (self, name, value, FALSE);
-		g_variant_unref (value);
-	}
-}
-
-static void
-properties_changed (GDBusProxy *proxy,
-                    GVariant   *properties,
-                    gpointer    user_data)
-{
-	NMObject *self = NM_OBJECT (user_data);
-	NMObjectPrivate *priv = NM_OBJECT_GET_PRIVATE (self);
-	GVariantIter iter;
-	const char *name;
-	GVariant *value;
-
-	g_printerr ("XXX properties_changed\n");
-
-	if (priv->suppress_property_updates)
-		return;
-
-	g_variant_iter_init (&iter, properties);
-	while (g_variant_iter_next (&iter, "{&sv}", &name, &value)) {
-		g_printerr ("XXX \t%s\n", name);
 		handle_property_changed (self, name, value, FALSE);
 		g_variant_unref (value);
 	}
@@ -1057,46 +1030,6 @@ _nm_object_suppress_property_updates (NMObject *object, gboolean suppress)
 	NMObjectPrivate *priv = NM_OBJECT_GET_PRIVATE (object);
 
 	priv->suppress_property_updates = suppress;
-}
-
-
-void
-_nm_object_reload_property (NMObject *object,
-                            const char *interface,
-                            const char *prop_name)
-{
-#if 0
-	GVariant *ret, *value;
-	GError *err = NULL;
-
-	g_return_if_fail (NM_IS_OBJECT (object));
-	g_return_if_fail (interface != NULL);
-	g_return_if_fail (prop_name != NULL);
-
-	if (!NM_OBJECT_GET_PRIVATE (object)->nm_running)
-		return;
-
-	ret = _nm_dbus_proxy_call_sync (NM_OBJECT_GET_PRIVATE (object)->properties_proxy,
-	                                "Get",
-	                                g_variant_new ("(ss)", interface, prop_name),
-	                                G_VARIANT_TYPE ("(v)"),
-	                                G_DBUS_CALL_FLAGS_NONE, 15000,
-	                                NULL, &err);
-	if (!ret) {
-		dbgmsg ("%s: Error getting '%s' for %s: %s\n",
-		        __func__,
-		        prop_name,
-		        nm_object_get_path (object),
-		        err->message);
-		g_clear_error (&err);
-		return;
-	}
-
-	g_variant_get (ret, "(v)", &value);
-	handle_property_changed (object, prop_name, value, TRUE);
-	g_variant_unref (value);
-	g_variant_unref (ret);
-#endif
 }
 
 void

@@ -621,7 +621,7 @@ object_created (GObject *obj, const char *path, gpointer user_data)
 
 static gboolean
 handle_object_property (NMObject *self, const char *property_name, GVariant *value,
-                        PropertyInfo *pi, gboolean synchronously)
+                        PropertyInfo *pi)
 {
 	NMObjectPrivate *priv = NM_OBJECT_GET_PRIVATE (self);
 	GDBusObject *object;
@@ -661,7 +661,7 @@ handle_object_property (NMObject *self, const char *property_name, GVariant *val
 
 static gboolean
 handle_object_array_property (NMObject *self, const char *property_name, GVariant *value,
-                              PropertyInfo *pi, gboolean synchronously)
+                              PropertyInfo *pi)
 {
 	NMObjectPrivate *priv = NM_OBJECT_GET_PRIVATE (self);
 	GDBusObject *object;
@@ -712,17 +712,11 @@ handle_object_array_property (NMObject *self, const char *property_name, GVarian
 		g_object_unref (object);
 	}
 
-	if (!synchronously) {
-		/* Assume success */
-		return TRUE;
-	}
-
 	return *array && ((*array)->len == npaths);
 }
 
 static void
-handle_property_changed (NMObject *self, const char *dbus_name,
-                         GVariant *value, gboolean synchronously)
+handle_property_changed (NMObject *self, const char *dbus_name, GVariant *value)
 {
 	NMObjectPrivate *priv = NM_OBJECT_GET_PRIVATE (self);
 	char *prop_name;
@@ -776,9 +770,9 @@ handle_property_changed (NMObject *self, const char *dbus_name,
 
 	if (pspec && pi->object_type) {
 		if (g_variant_is_of_type (value, G_VARIANT_TYPE_OBJECT_PATH))
-			success = handle_object_property (self, pspec->name, value, pi, synchronously);
+			success = handle_object_property (self, pspec->name, value, pi);
 		else if (g_variant_is_of_type (value, G_VARIANT_TYPE ("ao")))
-			success = handle_object_array_property (self, pspec->name, value, pi, synchronously);
+			success = handle_object_array_property (self, pspec->name, value, pi);
 		else {
 			g_warn_if_reached ();
 			goto out;
@@ -798,10 +792,10 @@ out:
 }
 
 static void
-g_properties_changed (GDBusProxy *proxy,
-                      GVariant   *changed_properties,
-                      GStrv       invalidated_properties,
-                      gpointer    user_data)
+properties_changed (GDBusProxy *proxy,
+                    GVariant   *changed_properties,
+                    GStrv       invalidated_properties,
+                    gpointer    user_data)
 {
 	NMObject *self = NM_OBJECT (user_data);
 	NMObjectPrivate *priv = NM_OBJECT_GET_PRIVATE (self);
@@ -814,7 +808,7 @@ g_properties_changed (GDBusProxy *proxy,
 
 	g_variant_iter_init (&iter, changed_properties);
 	while (g_variant_iter_next (&iter, "{&sv}", &name, &value)) {
-		handle_property_changed (self, name, value, FALSE);
+		handle_property_changed (self, name, value);
 		g_variant_unref (value);
 	}
 }
@@ -996,13 +990,9 @@ _nm_object_register_properties (NMObject *object,
 		g_once_init_leave (&dval, 1);
 	}
 
-	proxy = G_DBUS_PROXY (g_dbus_object_get_interface (priv->object, interface));
-	//g_return_if_fail (proxy != NULL);
-
-	_nm_dbus_signal_connect (proxy, "PropertiesChanged", G_VARIANT_TYPE ("(a{sv})"),
-	                         G_CALLBACK (properties_changed), object);
+	proxy = _nm_object_get_proxy (object, interface);
 	g_signal_connect (proxy, "g-properties-changed",
-		          G_CALLBACK (g_properties_changed), object);
+		          G_CALLBACK (properties_changed), object);
 
 	instance = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->property_tables = g_slist_prepend (priv->property_tables, instance);
@@ -1039,7 +1029,6 @@ _nm_object_set_property (NMObject *object,
                          const char *format_string,
                          ...)
 {
-#if 0
 	GVariant *val, *ret;
 	va_list ap;
 
@@ -1056,15 +1045,14 @@ _nm_object_set_property (NMObject *object,
 	va_end (ap);
 	g_return_if_fail (val != NULL);
 
-	ret = g_dbus_proxy_call_sync (NM_OBJECT_GET_PRIVATE (object)->properties_proxy,
-	                              "Set",
+	ret = g_dbus_proxy_call_sync (_nm_object_get_proxy (object, interface),
+	                              DBUS_INTERFACE_PROPERTIES ".Set",
 	                              g_variant_new ("(ssv)", interface, prop_name, val),
 	                              G_DBUS_CALL_FLAGS_NONE, 2000,
 	                              NULL, NULL);
 	/* Ignore errors. */
 	if (ret)
 		g_variant_unref (ret);
-#endif
 }
 
 static void
@@ -1226,7 +1214,7 @@ init_if (GDBusInterface *interface, gpointer user_data)
 	for (prop = props; *prop; prop++) {
                 val = g_dbus_proxy_get_cached_property (proxy, *prop);
                 str = g_variant_print (val, TRUE);
-		handle_property_changed (self, *prop, val, FALSE);
+		handle_property_changed (self, *prop, val);
                 g_variant_unref (val);
                 g_free (str);
 	}

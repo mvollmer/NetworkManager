@@ -7185,7 +7185,7 @@ nmc_properties_init (void)
 	                    NULL);
 	nmc_add_prop_funcs (GLUE (WIRED, SPEED),
 	                    nmc_property_wired_get_speed,
-	                    nmc_property_set_int,
+	                    nmc_property_set_uint,
 	                    NULL,
 	                    NULL,
 	                    NULL,

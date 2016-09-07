@@ -2554,7 +2554,7 @@ nmc_setting_ip6_connect_handlers (NMSettingIPConfig *setting)
 }
 
 void
-nmc_setting_proxy_connect_handler (NMSettingProxy *setting)
+nmc_setting_proxy_connect_handlers (NMSettingProxy *setting)
 {
 	g_return_if_fail (NM_IS_SETTING_PROXY (setting));
 
@@ -2639,7 +2639,6 @@ nmc_setting_custom_init (NMSetting *setting)
 		g_object_set (NM_SETTING_PROXY (setting),
 		              NM_SETTING_PROXY_METHOD, NM_SETTING_PROXY_METHOD_NONE,
 		              NULL);
-		nmc_setting_proxy_connect_handler (NM_SETTING_PROXY (setting));
 	} else if (NM_IS_SETTING_TUN (setting)) {
 		g_object_set (NM_SETTING_TUN (setting),
 		              NM_SETTING_TUN_MODE, NM_SETTING_TUN_MODE_TUN,

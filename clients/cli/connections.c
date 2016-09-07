@@ -7072,6 +7072,8 @@ editor_menu_main (NmCli *nmc, NMConnection *connection, const char *connection_t
 						nmc_setting_ip4_connect_handlers (NM_SETTING_IP_CONFIG (setting));
 					else if (NM_IS_SETTING_IP6_CONFIG (setting))
 						nmc_setting_ip6_connect_handlers (NM_SETTING_IP_CONFIG (setting));
+					else if (NM_IS_SETTING_PROXY (setting))
+						nmc_setting_proxy_connect_handlers (NM_SETTING_PROXY (setting));
 
 					nm_connection_add_setting (connection, setting);
 				}
@@ -7750,7 +7752,7 @@ editor_init_existing_connection (NMConnection *connection)
 	if (s_ip6)
 		nmc_setting_ip6_connect_handlers (s_ip6);
 	if (s_proxy)
-		nmc_setting_proxy_connect_handler (s_proxy);
+		nmc_setting_proxy_connect_handlers (s_proxy);
 	if (s_wireless)
 		nmc_setting_wireless_connect_handlers (s_wireless);
 	if (s_con)

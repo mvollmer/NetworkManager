@@ -261,6 +261,19 @@ nmp_utils_ethtool_get_wake_on_lan (const char *ifname)
 }
 
 gboolean
+nmp_utils_ethtool_get_link_autoneg (const char *ifname)
+{
+	struct ethtool_cmd edata = {
+		.cmd = ETHTOOL_GSET,
+	};
+
+	if (!ethtool_get (ifname, &edata))
+		return FALSE;
+
+	return (edata.autoneg == AUTONEG_ENABLE);
+}
+
+gboolean
 nmp_utils_ethtool_get_link_speed (const char *ifname, guint32 *out_speed)
 {
 	struct ethtool_cmd edata = {
@@ -282,6 +295,61 @@ nmp_utils_ethtool_get_link_speed (const char *ifname, guint32 *out_speed)
 	if (out_speed)
 		*out_speed = speed;
 	return TRUE;
+}
+
+gboolean
+nmp_utils_ethtool_get_link_duplex (const char *ifname, const char **out_duplex)
+{
+	struct ethtool_cmd edata = {
+		.cmd = ETHTOOL_GSET,
+	};
+
+	if (!ethtool_get (ifname, &edata))
+		return FALSE;
+
+	switch (edata.duplex) {
+		case DUPLEX_HALF:
+			*out_duplex = "half";
+			break;
+		case DUPLEX_FULL:
+			*out_duplex = "full";
+			break;
+		default:
+			return FALSE;
+			break;
+	}
+	return TRUE;
+}
+
+gboolean
+nmp_utils_ethtool_set_link_settings (const char *ifname, gboolean autoneg, guint32 speed, const char *duplex)
+{
+	struct ethtool_cmd edata = {
+		.cmd = ETHTOOL_GSET,
+	};
+
+	/* retrieve first current settings */
+	if (!ethtool_get (ifname, &edata))
+		return FALSE;
+
+	/* then change the needed ones */
+	edata.cmd = ETHTOOL_SSET;
+	if (autoneg) {
+		edata.autoneg = AUTONEG_ENABLE;
+	} else {
+		edata.autoneg = AUTONEG_DISABLE;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,27)
+		edata.speed = (guint16) speed;
+#else
+		ethtool_cmd_speed_set (&edata, speed);
+#endif
+		if nm_streq0 (duplex, "half")
+			edata.duplex = DUPLEX_HALF;
+		else
+			edata.duplex = DUPLEX_FULL;
+	}
+
+	return ethtool_get (ifname, &edata);
 }
 
 gboolean

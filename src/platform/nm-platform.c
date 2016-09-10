@@ -2482,6 +2482,30 @@ nm_platform_ethtool_set_wake_on_lan (NMPlatform *self, const char *ifname, NMSet
 }
 
 gboolean
+nm_platform_ethtool_set_link_settings (NMPlatform *self, const char *ifname, gboolean autoneg, guint32 speed, const char *duplex)
+{
+	nm_auto_pop_netns NMPNetns *netns = NULL;
+	_CHECK_SELF (self, klass, FALSE);
+
+	if (!nm_platform_netns_push (self, &netns))
+		return FALSE;
+
+	return nmp_utils_ethtool_set_link_settings (ifname, autoneg, speed, duplex);
+}
+
+gboolean
+nm_platform_ethtool_get_link_autoneg (NMPlatform *self, const char *ifname)
+{
+	nm_auto_pop_netns NMPNetns *netns = NULL;
+	_CHECK_SELF (self, klass, FALSE);
+
+	if (!nm_platform_netns_push (self, &netns))
+		return FALSE;
+
+	return nmp_utils_ethtool_get_link_autoneg (ifname);
+}
+
+gboolean
 nm_platform_ethtool_get_link_speed (NMPlatform *self, const char *ifname, guint32 *out_speed)
 {
 	nm_auto_pop_netns NMPNetns *netns = NULL;
@@ -2491,6 +2515,18 @@ nm_platform_ethtool_get_link_speed (NMPlatform *self, const char *ifname, guint3
 		return FALSE;
 
 	return nmp_utils_ethtool_get_link_speed (ifname, out_speed);
+}
+
+gboolean
+nm_platform_ethtool_get_link_duplex (NMPlatform *self, const char *ifname, const char **out_duplex)
+{
+	nm_auto_pop_netns NMPNetns *netns = NULL;
+	_CHECK_SELF (self, klass, FALSE);
+
+	if (!nm_platform_netns_push (self, &netns))
+		return FALSE;
+
+	return nmp_utils_ethtool_get_link_duplex (ifname, out_duplex);
 }
 
 /******************************************************************/
